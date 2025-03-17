@@ -8,7 +8,7 @@ const STATIC_VALUE = 'test-value'
 // Type guards for better test assertions
 const isResult = <T>(result: Either<T>): result is SuccessResult<T> =>
   !result.isError
-const isErrorResult = (result: Either<any>): result is ErrorResult =>
+const isErrorResult = (result: Either<unknown>): result is ErrorResult =>
   result.isError
 
 // Test helpers
