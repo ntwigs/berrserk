@@ -29,7 +29,7 @@ export type ErrorResult<TMessage extends Message = Message> = {
   isError: true
 }
 
-export function withError<TCallback>(
+export function withError(
   callback: () => never,
   message?: Message
 ): ErrorResult<Message>
