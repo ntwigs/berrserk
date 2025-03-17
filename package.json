@@ -1,5 +1,5 @@
 {
-  "name": "werror",
+  "name": "errwrap",
   "version": "0.1.0",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
   "homepage": "https://github.com/ntwigs/werror",
