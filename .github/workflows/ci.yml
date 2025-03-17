@@ -10,18 +10,23 @@ jobs:
         node-version: [20]
     steps:
       - uses: actions/checkout@v4
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
+
       - name: Run linter
         run: pnpm lint
+
       - name: Run formatter check
         run: pnpm format:check
