@@ -1,6 +1,6 @@
 {
   "name": "werror",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
   "homepage": "https://github.com/ntwigs/werror",
   "type": "module",
