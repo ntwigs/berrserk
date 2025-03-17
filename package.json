@@ -1,6 +1,8 @@
 {
-  "name": "rslib-node-esm-ts",
+  "name": "werror",
   "version": "1.0.0",
+  "description": "Lightweight TypeScript library for type-safe errors-as-values",
+  "homepage": "https://github.com/ntwigs/werror",
   "type": "module",
   "prettier": "@goatee/prettier",
   "exports": {
