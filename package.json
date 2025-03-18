@@ -1,8 +1,8 @@
 {
-  "name": "errwrap",
+  "name": "berrzerk",
   "version": "0.1.0",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
-  "homepage": "https://github.com/ntwigs/werror",
+  "homepage": "https://github.com/ntwigs/berrzerk",
   "type": "module",
   "prettier": "@goatee/prettier",
   "exports": {
