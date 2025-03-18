@@ -18,6 +18,7 @@ export type Either<TCallback, TMessage extends Message = Message> =
 
 export type SuccessResult<TResult, TMessage extends Message = Message> = {
   data: TResult
+  error?: undefined
   message: ExtractSuccessMessage<TMessage>
   isError: false
 }
