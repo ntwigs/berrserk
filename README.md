@@ -1,10 +1,21 @@
 # Berrserk
 
-## Lightweight TypeScript library for type-safe errors-as-values
+<p align="center">
+  <img alt='funky-sloth' src='https://github.com/ntwigs/funky/assets/14088342/1710632c-da0e-4575-8668-e374c617e3ce' width='250'/>
+  <h1 align="center">berrserk</h1>
+  <p align="center">Errors as values</p>
+  <p align="center">
+    <a href="https://github.com/ntwigs/berrserk/blob/main/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg?style=for-the-badge" alt="mit license"></a>
+    <a href="https://www.npmjs.org/package/berrserk"><img src="https://img.shields.io/npm/v/berrserk?style=for-the-badge" alt="npm version"></a>
+    <a href="https://bundlephobia.com/result?p=berrserk"><img src="https://img.shields.io/bundlephobia/minzip/berrserk?label=size&style=for-the-badge" alt="bundlephobia"></a>
+  </p>
+</div>
 
-[![mit licence](https://img.shields.io/dub/l/vibe-d.svg?style=for-the-badge)](https://github.com/ntwigs/berrserk/blob/main/LICENSE)
-[![npm version](https://img.shields.io/npm/v/berrserk?style=for-the-badge)](https://www.npmjs.org/package/berrserk)
-[![bundlephobia](https://img.shields.io/bundlephobia/minzip/berrserk?label=size&style=for-the-badge)](https://bundlephobia.com/result?p=berrserk)
+---
+
+Lightweight TypeScript library for type-safe errors-as-values
+
+---
 
 ## Highlights
 
@@ -109,11 +120,11 @@ const { data, isError, message, error } = await withError(getGitHubUsers, {
 })
 
 if (isError) {
-  console.error(`[FAILED]: ${message}, [ERROR]: ${error}`) // Error from fetching users
+  console.error(`[FAILED]: ${message}, [ERROR]: ${error}`)
   return
 }
 
-console.log(`[SUCCESS]: ${message}, [RESULT]: ${data}`) // The callback result
+console.log(`[SUCCESS]: ${message}, [RESULT]: ${data}`)
 ```
 
 Sync throwing errors:
@@ -135,3 +146,18 @@ const lotsOfFives = new Array(10)
 
 console.log(lotsOfFives)
 ```
+
+## Local setup
+
+This shoudl be rather straight forward:
+
+1. Clone the repo
+2. Install dev-dependencies `pnpm i`
+3. Run with `pnpm dev`
+4. Build with `pnpm build`
+5. Format with `pnpm format`
+6. Lint with `pnpm lint`
+
+---
+
+Created with an unhealthy amount of hatred towards error-throwing.
