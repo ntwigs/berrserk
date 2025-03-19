@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt='berrserk-logo' src='/assets/berrserk.png' width='400'/>
+  <img alt='berrserk-logo' src='assets/berrserk.png' width='400'/>
   <p align="center">Lightweight TypeScript library for type-safe errors-as-values</p>
   <p align="center">
     <a href="https://github.com/ntwigs/berrserk/blob/main/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg?style=for-the-badge" alt="mit license"></a>
