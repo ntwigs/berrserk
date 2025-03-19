@@ -1,6 +1,6 @@
 {
   "name": "berrserk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
   "homepage": "https://github.com/ntwigs/berrserk",
   "type": "module",
