@@ -1,7 +1,7 @@
 # Berrserk
 
 <p align="center">
-  <img alt='funky-sloth' src='https://github.com/ntwigs/funky/assets/14088342/1710632c-da0e-4575-8668-e374c617e3ce' width='250'/>
+  <img alt='berrserk-logo' src='https://github.com/ntwigs/funky/assets/14088342/1710632c-da0e-4575-8668-e374c617e3ce' width='350'/>
   <h1 align="center">berrserk</h1>
   <p align="center">Lightweight TypeScript library for type-safe errors-as-values</p>
   <p align="center">
