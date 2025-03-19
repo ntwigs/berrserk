@@ -1,4 +1,5 @@
 # Berrserk
+
 ## Lightweight TypeScript library for type-safe errors-as-values
 
 ## Why
@@ -12,16 +13,19 @@ However - I am a fan of errors as values. Which makes the code a lot easier to r
 Basically - wrap whatever function you have with `withError` to catch thrown errors and rejected promises.
 
 Basic usage:
+
 ```
 const result = withError(() => 42)
 ```
 
 Basic async usage:
+
 ```
 const result = await withError(() => new Promise<number>(resolve => resolve(42)))
 ```
 
 Sync throwing error:
+
 ```
 const mustBeHigherThan5 = () => {
     const randomNumber = Math.floor(Math.random() * 10)
@@ -40,6 +44,7 @@ console.log(isHigerThan5.data)
 ```
 
 Async rejection:
+
 ```
 const getGitHubUsers = () => fetch('...')
 const githubUsersResult = await withError(getGitHubUsers)
@@ -53,6 +58,7 @@ console.log(githubUsersResult.data)
 ```
 
 Async rejection with messages:
+
 ```
 const getGitHubUsers = () => fetch('...')
 const githubUsersResult = await withError(getGitHubUsers, {
@@ -69,6 +75,7 @@ console.log(`[SUCCESS]: ${githubUsersResult.message}, [RESULT]: ${githubUsersRes
 ```
 
 Async rejection with messages and destruct:
+
 ```
 const getGitHubUsers = () => fetch('...')
 const { data, isError, message, error } = await withError(getGitHubUsers, {
@@ -85,6 +92,7 @@ console.log(`[SUCCESS]: ${message}, [RESULT]: ${data}`) // The callback result
 ```
 
 Sync throwing errors:
+
 ```
 const mustBeHigherThan5 = () => {
     const randomNumber = Math.floor(Math.random() * 10)
