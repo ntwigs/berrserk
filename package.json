@@ -1,8 +1,8 @@
 {
-  "name": "berrzerk",
+  "name": "berrserk",
   "version": "0.1.0",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
-  "homepage": "https://github.com/ntwigs/berrzerk",
+  "homepage": "https://github.com/ntwigs/berrserk",
   "type": "module",
   "prettier": "@goatee/prettier",
   "exports": {
