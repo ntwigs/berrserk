@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt='berrserk-logo' src='https://github.com/user-attachments/assets/f4955b20-3ce7-49b7-9685-4199d49ed3c8' width='400'/>
+  <img alt='berrserk-logo' src='/assets/berrserk.png' width='400'/>
   <p align="center">Lightweight TypeScript library for type-safe errors-as-values</p>
   <p align="center">
     <a href="https://github.com/ntwigs/berrserk/blob/main/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg?style=for-the-badge" alt="mit license"></a>
@@ -15,7 +15,7 @@
 - Type safe
 - No dependencies
 - Clean and simple
-- It's been locally sourced by a human
+- Locally sourced by a human
 
 ## Install
 
@@ -27,9 +27,9 @@ Or whatever package manager you're currently using.
 
 ## Why
 
-I'm not a fan of throwing errors - it breaks the flow of the code. Throwing somewhere, catching somewhere else - or hope that someone else is catching it.
+I'm not a fan of throwing errors - it breaks the flow of the code. Throwing somewhere, catching somewhere else - or hoping that someone else is catching it.
 
-However - I am a fan of errors as values. Which makes the code a lot easier to read and follow. Therefore I always end up writing something similar to `berrserk` in each project to handle my errors as values.
+However, I am a fan of errors as values. Which makes the code a lot easier to read and follow. Therefore I always end up writing something similar to `berrserk` in each project to handle my errors as values.
 
 ## How
 
@@ -49,7 +49,7 @@ const result = await withError(
 )
 ```
 
-Sync throwing error:
+Synchronous throwing error:
 
 ```ts
 const mustBeHigherThan5 = () => {
@@ -59,9 +59,9 @@ const mustBeHigherThan5 = () => {
   }
   return randomNumber
 }
-const isHigerThan5 = withError(mustBeHigherThan5)
-if (isHigerThan5.isError) {
-  console.error(isHigerThan5.error)
+const isHigherThan5 = withError(mustBeHigherThan5)
+if (isHigherThan5.isError) {
+  console.error(isHigherThan5.error)
   return
 }
 
@@ -103,7 +103,7 @@ console.log(
 )
 ```
 
-Async rejection with messages and destruct:
+Async rejection with messages and destructure:
 
 ```ts
 const getGitHubUsers = () => fetch('...')
@@ -120,7 +120,7 @@ if (isError) {
 console.log(`[SUCCESS]: ${message}, [RESULT]: ${data}`)
 ```
 
-Sync throwing errors:
+Synchronous throwing errors:
 
 ```ts
 const mustBeHigherThan5 = () => {
@@ -145,13 +145,13 @@ console.log(lotsOfFives)
 This should be rather straight forward:
 
 1. Clone the repo
-2. Install dev-dependencies `pnpm i`
+2. Install development dependencies `pnpm i`
 3. Run with `pnpm dev`
 4. Build with `pnpm build`
 5. Format with `pnpm format`
 6. Lint with `pnpm lint`
 
-If you're having issues - file an issue.
+If you're having issues, file an issue.
 
 ---
 
