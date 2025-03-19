@@ -3,17 +3,13 @@
 <p align="center">
   <img alt='funky-sloth' src='https://github.com/ntwigs/funky/assets/14088342/1710632c-da0e-4575-8668-e374c617e3ce' width='250'/>
   <h1 align="center">berrserk</h1>
-  <p align="center">Errors as values</p>
+  <p align="center">Lightweight TypeScript library for type-safe errors-as-values</p>
   <p align="center">
     <a href="https://github.com/ntwigs/berrserk/blob/main/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg?style=for-the-badge" alt="mit license"></a>
     <a href="https://www.npmjs.org/package/berrserk"><img src="https://img.shields.io/npm/v/berrserk?style=for-the-badge" alt="npm version"></a>
     <a href="https://bundlephobia.com/result?p=berrserk"><img src="https://img.shields.io/bundlephobia/minzip/berrserk?label=size&style=for-the-badge" alt="bundlephobia"></a>
   </p>
 </div>
-
----
-
-Lightweight TypeScript library for type-safe errors-as-values
 
 ---
 
@@ -36,7 +32,7 @@ Or whatever package manager you're currently using.
 
 I'm not a fan of throwing errors - it breaks the flow of the code. Throwing somewhere, catching somewhere else - or hope that someone else is catching it.
 
-However - I am a fan of errors as values. Which makes the code a lot easier to read and follow. Therefore I always end up writing something similar to Berrserk in each project to handle my errors as values.
+However - I am a fan of errors as values. Which makes the code a lot easier to read and follow. Therefore I always end up writing something similar to `berrserk` in each project to handle my errors as values.
 
 ## How
 
@@ -149,7 +145,7 @@ console.log(lotsOfFives)
 
 ## Local setup
 
-This shoudl be rather straight forward:
+This should be rather straight forward:
 
 1. Clone the repo
 2. Install dev-dependencies `pnpm i`
@@ -157,6 +153,8 @@ This shoudl be rather straight forward:
 4. Build with `pnpm build`
 5. Format with `pnpm format`
 6. Lint with `pnpm lint`
+
+If you're having issues - file an issue.
 
 ---
 
