@@ -13,7 +13,7 @@
 ## Installation
 
 ```bash
-npm install berrserk
+npm add berrserk
 # or
 yarn add berrserk
 # or
