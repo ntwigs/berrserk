@@ -10,148 +10,192 @@
 
 ---
 
-## Highlights
+## Installation
 
-- Type safe
-- No dependencies
-- Clean and simple
-- Locally sourced by a human
-
-## Install
-
-```sh
+```bash
 npm install berrserk
+# or
+yarn add berrserk
+# or
+pnpm add berrserk
 ```
 
 Or whatever package manager you're currently using.
 
-## Why
+## Highlights
 
-I'm not a fan of throwing errors - it breaks the flow of the code. Throwing somewhere, catching somewhere else - or hoping that someone else is catching it.
+- Handle errors as values rather than exceptions
+- Support for both synchronous and asynchronous functions
+- Type-safe return values with proper TypeScript definitions
+- Zero dependencies
+- It's also *very* cool
 
-However, I am a fan of errors as values. Which makes the code a lot easier to read and follow. Therefore I always end up writing something similar to `berrserk` in each project to handle my errors as values.
+## Usage
 
-## How
+### Basic Usage
 
-Basically - wrap whatever function you have with `withError` to catch thrown errors and rejected promises.
+```typescript
+import { withError } from 'berrserk'
 
-Basic usage:
-
-```ts
-const result = withError(() => 42)
-```
-
-Basic async usage:
-
-```ts
-const result = await withError(
-  () => new Promise<number>((resolve) => resolve(42))
-)
-```
-
-Synchronous throwing error:
-
-```ts
-const mustBeHigherThan5 = () => {
-  const randomNumber = Math.floor(Math.random() * 10)
-  if (randomNumber < 5) {
-    throw new Error("Random number wasn\'t high enough")
-  }
-  return randomNumber
-}
-const isHigherThan5 = withError(mustBeHigherThan5)
-if (isHigherThan5.isError) {
-  console.error(isHigherThan5.error)
-  return
-}
-
-console.log(isHigerThan5.data)
-```
-
-Async rejection:
-
-```ts
-const getGitHubUsers = () => fetch('...')
-const githubUsersResult = await withError(getGitHubUsers)
-
-if (githubUsersResult.isError) {
-  console.error(githubUsersResult.error)
-  return
-}
-
-console.log(githubUsersResult.data)
-```
-
-Async rejection with messages:
-
-```ts
-const getGitHubUsers = () => fetch('...')
-const githubUsersResult = await withError(getGitHubUsers, {
-  successMessage: 'Successfully fetched GitHub users',
-  errorMessage: 'Failed to fetch GitHub users',
+// Synchronous example
+const result = withError(() => {
+  // This might throw an error
+  return JSON.parse('{"valid": "json"}')
 })
 
-if (githubUsersResult.isError) {
-  console.error(
-    `[FAILED]: ${githubUsersResult.message}, [ERROR]: ${githubUsersResult.error}`
-  )
-  return
-}
+result.error
+  ? console.log('Parsed data:', result.data)
+  : console.error('Error parsing:', result.error.message)
 
-console.log(
-  `[SUCCESS]: ${githubUsersResult.message}, [RESULT]: ${githubUsersResult.data}`
-)
-```
+// Asynchronous example
+const fetchData = async () => {
+  const result = await withError(async () => {
+    const response = await fetch('https://api.example.com/data')
+    return response.json()
+  })
 
-Async rejection with messages and destructure:
-
-```ts
-const getGitHubUsers = () => fetch('...')
-const { data, isError, message, error } = await withError(getGitHubUsers, {
-  successMessage: 'Successfully fetched GitHub users',
-  errorMessage: 'Failed to fetch GitHub users',
-})
-
-if (isError) {
-  console.error(`[FAILED]: ${message}, [ERROR]: ${error}`)
-  return
-}
-
-console.log(`[SUCCESS]: ${message}, [RESULT]: ${data}`)
-```
-
-Synchronous throwing errors:
-
-```ts
-const mustBeHigherThan5 = () => {
-  const randomNumber = Math.floor(Math.random() * 10)
-  if (randomNumber < 5) {
-    throw new Error("Random number wasn\'t high enough")
+  if (result.error) {
+    console.error('API Error:', result.error)
+    return null
   }
-  return randomNumber
+
+  return result.data
 }
-
-const lotsOfFives = new Array(10)
-  .fill(null)
-  .map(() => withError(mustBeHigherThan5))
-  .filter((result) => !result.isError)
-  .map((result) => result.data)
-
-console.log(lotsOfFives)
 ```
 
-## Local setup
+### Type Definitions
 
-This should be rather straight forward:
+```typescript
+type Either<TResult, TError = Error> = Success<TResult> | Failure<TError>
 
-1. Clone the repo
-2. Install development dependencies `pnpm i`
-3. Run with `pnpm dev`
-4. Build with `pnpm build`
-5. Format with `pnpm format`
-6. Lint with `pnpm lint`
+type Success<TResult> = {
+  data: TResult
+  error?: undefined
+}
 
-If you're having issues, file an issue.
+type Failure<TError = Error> = {
+  data?: undefined
+  error: TError
+}
+```
+
+## API Reference
+
+### `withError()`
+
+Executes a callback function and handles any errors that may be thrown, returning a structured result object.
+
+```typescript
+function withError<TResult>(
+  callback: () => TResult | Promise<TResult>
+): Either<TResult> | Promise<Either<TResult>>
+```
+
+#### Parameters
+
+- `callback`: A function that returns a value or a promise. If this function throws or rejects, the error will be caught and wrapped in the return value.
+
+#### Returns
+
+- For synchronous functions: `Either<TResult, Error>`
+- For asynchronous functions: `Promise<Either<TResult, Error>>`
+
+## Examples
+
+### Form Validation
+
+```typescript
+import { withError } from 'berrserk'
+
+const validateForm = (formData) => {
+  return withError(() => {
+    if (!formData.email) {
+      throw new Error('Email is required')
+    }
+    if (!formData.password) {
+      throw new Error('Password is required')
+    }
+    return { valid: true }
+  })
+}
+
+const result = validateForm({ email: 'user@example.com' })
+if (result.error) {
+  displayError(result.error.message) // "Password is required"
+}
+```
+
+### API Requests
+
+```typescript
+import { withError } from 'berrserk'
+
+const getUserData = async (userId) => {
+  const result = await withError(async () => {
+    const response = await fetch(`/api/users/${userId}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`)
+    }
+    return response.json()
+  })
+  
+  return result
+}
+
+// Usage
+const userResult = await getUserData(123)
+userResult.error 
+    ? showError(userResult.error) 
+    : renderUser(userResult.data)
+```
+
+## Benefits Over Traditional Try/Catch
+
+- Enforces error handling at compile time with TypeScript
+- Makes error paths explicit in your code
+- Eliminates the possibility of unhandled exceptions
+- Seamlessly works with both synchronous and asynchronous code
+- Provides consistent error handling patterns across your codebase
+
+## Local Development
+
+Setting up the project for local development is straightforward:
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/ntwigs/berrserk.git
+   cd berrserk
+   ```
+
+2. Install development dependencies
+   ```bash
+   pnpm i
+   ```
+
+3. Available scripts:
+   ```bash
+   # Watch mode during development
+   pnpm dev
+   
+   # Build the library
+   pnpm build
+   
+   # Run tests
+   pnpm test
+   
+   # Format code
+   pnpm format
+   
+   # Check formatting
+   pnpm format:check
+   
+   # Lint code
+   pnpm lint
+   ```
+
+The project uses `rslib` for building, `vitest` for testing, and follows the configuration from `@goatee/prettier` for code style.
+
+If you encounter any issues during setup or development, please [file an issue](https://github.com/ntwigs/berrserk/issues).
 
 ---
 
