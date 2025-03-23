@@ -28,7 +28,7 @@ Or whatever package manager you're currently using.
 - Support for both synchronous and asynchronous functions
 - Type-safe return values with proper TypeScript definitions
 - Zero dependencies
-- It's also *very* cool
+- It's also _very_ cool
 
 ## Usage
 
@@ -138,15 +138,13 @@ const getUserData = async (userId) => {
     }
     return response.json()
   })
-  
+
   return result
 }
 
 // Usage
 const userResult = await getUserData(123)
-userResult.error 
-    ? showError(userResult.error) 
-    : renderUser(userResult.data)
+userResult.error ? showError(userResult.error) : renderUser(userResult.data)
 ```
 
 ## Benefits Over Traditional Try/Catch
@@ -162,33 +160,36 @@ userResult.error
 Setting up the project for local development is straightforward:
 
 1. Clone the repository
+
    ```bash
    git clone https://github.com/ntwigs/berrserk.git
    cd berrserk
    ```
 
 2. Install development dependencies
+
    ```bash
    pnpm i
    ```
 
 3. Available scripts:
+
    ```bash
    # Watch mode during development
    pnpm dev
-   
+
    # Build the library
    pnpm build
-   
+
    # Run tests
    pnpm test
-   
+
    # Format code
    pnpm format
-   
+
    # Check formatting
    pnpm format:check
-   
+
    # Lint code
    pnpm lint
    ```
