@@ -1,83 +1,38 @@
-export type Message = { errorMessage?: string; successMessage?: string }
+type Either<TResult, TError = Error> = Success<TResult> | Failure<TError>
 
-type ExtractErrorMessage<TMessage extends Message> = TMessage extends {
-  errorMessage: infer TErrorMessage
-}
-  ? TErrorMessage
-  : undefined
-
-type ExtractSuccessMessage<TMessage extends Message> = TMessage extends {
-  successMessage: infer TSuccessMessage
-}
-  ? TSuccessMessage
-  : undefined
-
-export type Either<TCallback, TMessage extends Message = Message> =
-  | SuccessResult<TCallback, TMessage>
-  | ErrorResult<TMessage>
-
-export type SuccessResult<TResult, TMessage extends Message = Message> = {
+type Success<TResult> = {
   data: TResult
   error?: undefined
-  message: ExtractSuccessMessage<TMessage>
-  isError: false
 }
 
-export type ErrorResult<TMessage extends Message = Message> = {
+type Failure<TError = Error> = {
   data?: undefined
-  error: Error
-  message: ExtractErrorMessage<TMessage>
-  isError: true
+  error: TError
 }
 
-export function withError(
-  callback: () => never,
-  message?: Message
-): ErrorResult<Message>
-export function withError<TCallback, const TMessage extends Message = Message>(
-  callback: () => Promise<TCallback>,
-  message?: TMessage
-): Promise<Either<TCallback, TMessage>>
-export function withError<TCallback, const TMessage extends Message = Message>(
-  callback: () => TCallback,
-  message?: TMessage
-): Either<TCallback, TMessage>
-export function withError<TCallback, const TMessage extends Message = Message>(
-  callback: () => TCallback | Promise<TCallback>,
-  message: TMessage = {} as TMessage
-): Either<TCallback, TMessage> | Promise<Either<TCallback, TMessage>> {
-  const response = getResponseWithMessage(message)
-
+export function withError(callback: () => never): Failure
+export function withError<TResult>(
+  callback: () => Promise<TResult>
+): Promise<Either<TResult>>
+export function withError<TResult>(callback: () => TResult): Either<TResult>
+export function withError<TResult>(
+  callback: () => TResult | Promise<TResult>
+): Either<TResult> | Promise<Either<TResult>> {
   try {
     const result = callback()
     const isPromise = result instanceof Promise
-    if (!isPromise) return response.getSuccess(result)
+    if (!isPromise) return getSuccess(result)
 
-    return result.then(response.getSuccess).catch(response.getError)
+    return result.then(getSuccess).catch(getFailure)
   } catch (error) {
-    return response.getError(error)
+    return getFailure(error)
   }
 }
 
-const getResponseWithMessage = <const TMessage extends Message>(
-  message: TMessage
-) => {
-  const getError = (error: unknown): ErrorResult<TMessage> => ({
-    error: error instanceof Error ? error : new Error(String(error)),
-    message: message.errorMessage as ExtractErrorMessage<TMessage>,
-    isError: true,
-  })
+const getFailure = (error: unknown): Failure => ({
+  error: error instanceof Error ? error : new Error(String(error)),
+})
 
-  const getSuccess = <TResult>(
-    data: TResult
-  ): SuccessResult<TResult, TMessage> => ({
-    data,
-    message: message.successMessage as ExtractSuccessMessage<TMessage>,
-    isError: false,
-  })
-
-  return {
-    getError,
-    getSuccess,
-  }
-}
+const getSuccess = <TResult>(data: TResult): Success<TResult> => ({
+  data,
+})
