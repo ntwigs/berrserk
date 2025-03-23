@@ -1,254 +1,178 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { withError, type Either, type SuccessResult, type ErrorResult } from '.'
-
-// Test utilities
-const createTestError = () => new Error('test-error')
-const STATIC_VALUE = 'test-value'
-
-// Type guards for better test assertions
-const isResult = <T>(result: Either<T>): result is SuccessResult<T> =>
-  !result.isError
-const isErrorResult = (result: Either<unknown>): result is ErrorResult =>
-  result.isError
-
-// Test helpers
-const testMessages = {
-  success: 'success-message',
-  error: 'error-message',
-}
+import { describe, it, expect } from 'vitest'
+import { withError } from './index' // Adjust the import path as needed
 
 describe('withError', () => {
-  describe('sync functions', () => {
-    it('returns success result for successful execution', () => {
-      const result = withError(() => STATIC_VALUE)
+  // Test values
+  const testValue = { id: 1, name: 'item' }
+  const errorMessage = Symbol('error-message')
 
-      expect(isResult(result)).toBe(true)
-      expect(isErrorResult(result)).toBe(false)
+  // Synchronous success tests
+  describe('synchronous operations', () => {
+    it('should return data for successful operations', () => {
+      const result = withError(() => testValue)
 
-      if (isResult(result)) {
-        expect(result.data).toBe(STATIC_VALUE)
-      }
+      expect(result).toEqual({
+        data: testValue,
+      })
+      expect(result.error).toBeUndefined()
     })
 
-    it('returns error result when function throws', () => {
-      const error = createTestError()
+    it('should return error for failed operations', () => {
+      const error = new Error()
       const result = withError(() => {
         throw error
       })
 
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.error).toBe(error)
-      }
+      expect(result).toEqual({
+        error,
+      })
+      expect(result.data).toBeUndefined()
     })
 
-    it('converts non-Error throws to Error objects', () => {
+    it('should convert non-Error thrown values to Error objects', () => {
       const result = withError(() => {
-        throw 'not-an-error'
+        throw errorMessage
       })
 
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.error instanceof Error).toBe(true)
-        expect(result.error.message).toBe('not-an-error')
-      }
+      expect(result.error).toBeInstanceOf(Error)
+      expect(result.error?.message).toBe(String(errorMessage))
+      expect(result.data).toBeUndefined()
     })
 
-    it('includes custom error message', () => {
-      const result = withError(
-        () => {
-          throw createTestError()
-        },
-        { errorMessage: testMessages.error }
-      )
+    it('should handle null and undefined return values', () => {
+      const nullResult = withError(() => null)
+      expect(nullResult).toEqual({ data: null })
 
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.message).toBe(testMessages.error)
-      }
-    })
-
-    it('includes custom success message', () => {
-      const result = withError(() => STATIC_VALUE, {
-        successMessage: testMessages.success,
-      })
-
-      expect(isResult(result)).toBe(true)
-
-      if (isResult(result)) {
-        expect(result.message).toBe(testMessages.success)
-      }
+      const undefinedResult = withError(() => undefined)
+      expect(undefinedResult).toEqual({ data: undefined })
     })
   })
 
-  describe('async functions', () => {
-    it('returns success result for resolved promises', async () => {
-      const result = await withError(() => Promise.resolve(STATIC_VALUE))
+  // Asynchronous tests
+  describe('asynchronous operations', () => {
+    it('should return data for successful async operations', async () => {
+      const asyncValue = { ...testValue, async: true }
+      const result = await withError(async () => asyncValue)
 
-      expect(isResult(result)).toBe(true)
-
-      if (isResult(result)) {
-        expect(result.data).toBe(STATIC_VALUE)
-      }
+      expect(result).toEqual({
+        data: asyncValue,
+      })
+      expect(result.error).toBeUndefined()
     })
 
-    it('returns error result for rejected promises', async () => {
-      const error = createTestError()
-      const result = await withError(() => Promise.reject(error))
-
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.error).toBe(error)
-      }
-    })
-
-    it('handles throws in async functions', async () => {
-      const error = createTestError()
+    it('should return error for rejected promises', async () => {
+      const error = new Error()
       const result = await withError(async () => {
         throw error
       })
 
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.error).toBe(error)
-      }
+      expect(result).toEqual({
+        error,
+      })
+      expect(result.data).toBeUndefined()
     })
 
-    it('includes custom messages with async results', async () => {
-      const successResult = await withError(
-        () => Promise.resolve(STATIC_VALUE),
-        { successMessage: testMessages.success }
-      )
+    it('should handle errors thrown inside async functions', async () => {
+      const result = await withError(async () => {
+        // Error thrown inside async function rather than rejecting the promise directly
+        throw errorMessage
+      })
 
-      const errorResult = await withError(
-        () => Promise.reject(createTestError()),
-        { errorMessage: testMessages.error }
-      )
+      expect(result.error).toBeInstanceOf(Error)
+      expect(result.error?.message).toBe(String(errorMessage))
+      expect(result.data).toBeUndefined()
+    })
 
-      if (isResult(successResult)) {
-        expect(successResult.message).toBe(testMessages.success)
-      }
+    it('should handle delayed async responses', async () => {
+      const delayedValue = { ...testValue, delayed: true }
+      const result = await withError(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        return delayedValue
+      })
 
-      if (isErrorResult(errorResult)) {
-        expect(errorResult.message).toBe(testMessages.error)
-      }
+      expect(result).toEqual({
+        data: delayedValue,
+      })
+    })
+
+    it('should handle delayed async errors', async () => {
+      const error = new Error()
+      const result = await withError(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        throw error
+      })
+
+      expect(result).toEqual({
+        error,
+      })
     })
   })
 
-  describe('type handling', () => {
-    interface TestType {
-      id: number
-      value: string
-    }
-
-    const testObject: TestType = { id: 1, value: 'test' }
-
-    it('preserves return types', () => {
-      const result = withError(() => testObject)
-
-      expect(isResult(result)).toBe(true)
-
-      if (isResult(result)) {
-        expect(result.data).toEqual(testObject)
-        expect(result.data.id).toBe(1)
-        expect(result.data.value).toBe('test')
-      }
-    })
-
-    it('preserves async return types', async () => {
-      const result = await withError(() => Promise.resolve(testObject))
-
-      expect(isResult(result)).toBe(true)
-
-      if (isResult(result)) {
-        expect(result.data).toEqual(testObject)
-      }
-    })
-  })
-
-  describe('fetch operations', () => {
-    const mockResponse = { data: 'response-data' }
-
-    beforeEach(() => {
-      // Reset mocks between tests
-      vi.resetAllMocks()
-    })
-
-    it('handles successful fetch', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockResponse),
-      })
-
-      const fetchData = () => fetch('dummy-url').then((res) => res.json())
-      const result = await withError(fetchData, {
-        errorMessage: testMessages.error,
-        successMessage: testMessages.success,
-      })
-
-      expect(isResult(result)).toBe(true)
-
-      if (isResult(result)) {
-        expect(result.message).toBe(testMessages.success)
-        expect(result.data).toBe(mockResponse)
-      }
-    })
-
-    it('handles fetch failures', async () => {
-      const networkError = createTestError()
-      global.fetch = vi.fn().mockRejectedValue(networkError)
-
-      const fetchData = () => fetch('dummy-url').then((res) => res.json())
-      const result = await withError(fetchData, {
-        resultMessage: testMessages.success,
-        errorMessage: testMessages.error,
-      })
-
-      expect(isErrorResult(result)).toBe(true)
-
-      if (isErrorResult(result)) {
-        expect(result.message).toBe(testMessages.error)
-        expect(result.error).toBe(networkError)
-      }
-    })
-  })
-
+  // Edge cases
   describe('edge cases', () => {
-    it('handles null/undefined returns', () => {
-      const nullResult = withError(() => null)
-      const undefinedResult = withError(() => undefined)
+    it('should handle functions returning promises', async () => {
+      const promiseValue = { ...testValue, promise: true }
+      const result = await withError(() => Promise.resolve(promiseValue))
+      expect(result).toEqual({ data: promiseValue })
+    })
 
-      expect(isResult(nullResult)).toBe(true)
-      expect(isResult(undefinedResult)).toBe(true)
-
-      if (isResult(nullResult)) {
-        expect(nullResult.data).toBe(null)
+    it('should handle complex data structures', () => {
+      const complexData = {
+        array: [1, 2, 3],
+        nested: { value: Symbol('test') },
+        fn: () => Symbol('function'),
       }
 
-      if (isResult(undefinedResult)) {
-        expect(undefinedResult.data).toBe(undefined)
+      const result = withError(() => complexData)
+      expect(result).toEqual({ data: complexData })
+    })
+
+    it('should handle errors with custom properties', () => {
+      class CustomError extends Error {
+        code: symbol
+        constructor(message: symbol, code: symbol) {
+          super(String(message))
+          this.code = code
+        }
+      }
+
+      const errorSymbol = Symbol('custom-error')
+      const codeSymbol = Symbol('code')
+      const customError = new CustomError(errorSymbol, codeSymbol)
+      const result = withError(() => {
+        throw customError
+      })
+
+      expect(result.error).toBe(customError)
+      expect((result.error as CustomError).code).toBe(codeSymbol)
+    })
+  })
+
+  // Type checking
+  describe('type discrimination', () => {
+    it('should allow for type narrowing with property checks', () => {
+      const result = withError(() => testValue)
+
+      // Demonstrating type narrowing with property checks
+      if ('data' in result) {
+        expect(result.data).toBe(testValue)
+      } else {
+        // This branch shouldn't be reached in this test
+        throw new Error('Type narrowing failed')
       }
     })
 
-    it('supports nested withError calls', () => {
-      const innerValue = 'inner-value'
-      const transformValue = (val: string) => String(val).toUpperCase()
-
-      const innerResult = withError(() => innerValue)
-      const outerResult = withError(() => {
-        if (isErrorResult(innerResult)) throw innerResult.error
-        return transformValue(innerResult.data)
+    it('should handle type narrowing with error property', () => {
+      const expectedError = new Error()
+      const result = withError(() => {
+        throw expectedError
       })
 
-      expect(isResult(outerResult)).toBe(true)
-
-      if (isResult(outerResult)) {
-        expect(typeof outerResult.data).toBe('string')
+      if ('error' in result && result.error !== undefined) {
+        expect(result.error).toBe(expectedError)
+      } else {
+        // This branch shouldn't be reached in this test
+        throw new Error('Type narrowing failed')
       }
     })
   })
