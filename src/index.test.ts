@@ -1,12 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { withError } from './index' // Adjust the import path as needed
+import { withError } from '.'
 
 describe('withError', () => {
-  // Test values
   const testValue = { id: 1, name: 'item' }
   const errorMessage = Symbol('error-message')
 
-  // Synchronous success tests
   describe('synchronous operations', () => {
     it('should return data for successful operations', () => {
       const result = withError(() => testValue)
@@ -48,7 +46,6 @@ describe('withError', () => {
     })
   })
 
-  // Asynchronous tests
   describe('asynchronous operations', () => {
     it('should return data for successful async operations', async () => {
       const asyncValue = { ...testValue, async: true }
@@ -74,7 +71,6 @@ describe('withError', () => {
 
     it('should handle errors thrown inside async functions', async () => {
       const result = await withError(async () => {
-        // Error thrown inside async function rather than rejecting the promise directly
         throw errorMessage
       })
 
@@ -108,7 +104,6 @@ describe('withError', () => {
     })
   })
 
-  // Edge cases
   describe('edge cases', () => {
     it('should handle functions returning promises', async () => {
       const promiseValue = { ...testValue, promise: true }
