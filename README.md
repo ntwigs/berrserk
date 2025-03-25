@@ -44,8 +44,8 @@ const result = withError(() => {
 })
 
 result.error
-  ? console.log('Parsed data:', result.data)
-  : console.error('Error parsing:', result.error.message)
+  ? console.error('Error parsing:', result.error.message)
+  : console.log('Parsed data:', result.data)
 
 // Asynchronous example
 const fetchData = async () => {
@@ -194,9 +194,9 @@ Setting up the project for local development is straightforward:
    pnpm lint
    ```
 
-The project uses `rslib` for building, `vitest` for testing, and follows the configuration from `@goatee/prettier` for code style.
+The project uses `rslib` for building and `vitest` for testing.
 
-If you encounter any issues during setup or development, please [file an issue](https://github.com/ntwigs/berrserk/issues).
+If you encounter any issues during setup, development or usage, please [file an issue](https://github.com/ntwigs/berrserk/issues).
 
 ---
 
