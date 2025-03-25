@@ -148,11 +148,9 @@ describe('withError', () => {
     it('should allow for type narrowing with property checks', () => {
       const result = withError(() => testValue)
 
-      // Demonstrating type narrowing with property checks
-      if ('data' in result) {
+      if (result.data) {
         expect(result.data).toBe(testValue)
       } else {
-        // This branch shouldn't be reached in this test
         throw new Error('Type narrowing failed')
       }
     })
@@ -163,10 +161,9 @@ describe('withError', () => {
         throw expectedError
       })
 
-      if ('error' in result && result.error !== undefined) {
+      if (result.error) {
         expect(result.error).toBe(expectedError)
       } else {
-        // This branch shouldn't be reached in this test
         throw new Error('Type narrowing failed')
       }
     })
