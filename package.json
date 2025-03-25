@@ -1,8 +1,20 @@
 {
   "name": "berrserk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Lightweight TypeScript library for type-safe errors-as-values",
-  "homepage": "https://github.com/ntwigs/berrserk",
+  "repository": "ntwigs/berrserk",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "error-handling",
+    "error-management",
+    "functional",
+    "error-as-value",
+    "try-catch",
+    "runtime-safety",
+    "type-safety",
+    "zero-dependencies"
+  ],
   "type": "module",
   "prettier": "@goatee/prettier",
   "exports": {
